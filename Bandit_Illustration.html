@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Click Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .button-container {
+            margin: 20px;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+        }
+        #scoreboard {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="button-container">
+        <button id="buttonA">A</button>
+        <button id="buttonB">B</button>
+        <button id="buttonC">C</button>
+        <button id="buttonD">D</button>
+        <button id="buttonE">E</button>
+    </div>
+    <div id="scoreboard">Total Score: 0</div>
+
+    <script>
+        let totalClicks = 0;
+        let totalScore = 0;
+        const maxClicks = 20;
+        const scoreboard = document.getElementById('scoreboard');
+
+        // Gaussian distributions
+        const distributions = {
+            buttonA: { mean: 5, stdDev: 30 },
+            buttonB: { mean: 10, stdDev: 20 },
+            buttonC: { mean: 15, stdDev: 15 },
+            buttonD: { mean: 25, stdDev: 1 },
+            buttonE: { mean: 20, stdDev: 20 }
+        };
+
+        function generateGaussian(mean, stdDev) {
+            let u1 = Math.random();
+            let u2 = Math.random();
+            let randStdNormal = Math.sqrt(-2.0 * Math.log(u1)) * Math.sin(2.0 * Math.PI * u2);
+            let randNormal = mean + stdDev * randStdNormal;
+            return Math.round(randNormal);
+        }
+
+        function handleClick(event) {
+            if (totalClicks < maxClicks) {
+                const buttonId = event.target.id;
+                const { mean, stdDev } = distributions[buttonId];
+                const buttonValue = generateGaussian(mean, stdDev);
+                totalScore += buttonValue;
+                totalClicks++;
+                scoreboard.textContent = `Total Score: ${totalScore}`;
+
+                if (totalClicks >= maxClicks) {
+                    const buttons = document.querySelectorAll('button');
+                    buttons.forEach(btn => btn.disabled = true);
+                    alert('Maximum clicks reached!');
+                }
+            }
+        }
+
+        document.getElementById('buttonA').addEventListener('click', handleClick);
+        document.getElementById('buttonB').addEventListener('click', handleClick);
+        document.getElementById('buttonC').addEventListener('click', handleClick);
+        document.getElementById('buttonD').addEventListener('click', handleClick);
+        document.getElementById('buttonE').addEventListener('click', handleClick);
+    </script>
+</body>
+</html>
