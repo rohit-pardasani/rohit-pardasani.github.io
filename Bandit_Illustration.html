@@ -8,11 +8,15 @@
         body {
             font-family: Arial, sans-serif;
             display: flex;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .main-container {
+            flex: 1;
+            display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            background-color: #f0f0f0;
         }
         .button-container {
             margin: 20px;
@@ -27,31 +31,46 @@
             font-size: 24px;
             font-weight: bold;
         }
+        .sidebar {
+            width: 250px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+        .log {
+            font-size: 18px;
+            margin: 5px 0;
+        }
     </style>
 </head>
 <body>
-    <div class="button-container">
-        <button id="buttonA">A</button>
-        <button id="buttonB">B</button>
-        <button id="buttonC">C</button>
-        <button id="buttonD">D</button>
-        <button id="buttonE">E</button>
+    <div class="sidebar" id="logSidebar"></div>
+    <div class="main-container">
+        <div class="button-container">
+            <button id="buttonA">A</button>
+            <button id="buttonB">B</button>
+            <button id="buttonC">C</button>
+            <button id="buttonD">D</button>
+            <button id="buttonE">E</button>
+        </div>
+        <div id="scoreboard">Total Score: 0</div>
     </div>
-    <div id="scoreboard">Total Score: 0</div>
 
     <script>
         let totalClicks = 0;
         let totalScore = 0;
         const maxClicks = 20;
         const scoreboard = document.getElementById('scoreboard');
+        const logSidebar = document.getElementById('logSidebar');
 
         // Gaussian distributions
         const distributions = {
-            buttonA: { mean: 5, stdDev: 30 },
-            buttonB: { mean: 10, stdDev: 20 },
-            buttonC: { mean: 15, stdDev: 15 },
+            buttonA: { mean: 5, stdDev: 20 },
+            buttonB: { mean: 10, stdDev: 15 },
+            buttonC: { mean: 15, stdDev: 10 },
             buttonD: { mean: 25, stdDev: 1 },
-            buttonE: { mean: 20, stdDev: 20 }
+            buttonE: { mean: 20, stdDev: 10 }
         };
 
         function generateGaussian(mean, stdDev) {
@@ -70,6 +89,12 @@
                 totalScore += buttonValue;
                 totalClicks++;
                 scoreboard.textContent = `Total Score: ${totalScore}`;
+
+                // Log the button clicked and the score received
+                const logEntry = document.createElement('div');
+                logEntry.className = 'log';
+                logEntry.textContent = `Button ${event.target.textContent} clicked: ${buttonValue}`;
+                logSidebar.appendChild(logEntry);
 
                 if (totalClicks >= maxClicks) {
                     const buttons = document.querySelectorAll('button');
